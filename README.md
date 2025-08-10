@@ -14,4 +14,6 @@ In the **Scripts** folder:
 
 **FullAnalyses** contains individual analysis scripts for each meta analysis, including sensitivity analyses and ROBOS plots
 
+Other project files can be viewed on the project OSF page: https://osf.io/wsdjn/ 
+
 
