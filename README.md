@@ -1,5 +1,17 @@
 # MicrofinanceMetaAnalysis
 
-This repository contains the necessary code to reproduce the analysis of "Testing Evolutionary Theories of Cooperation via Meta-Analysis of Predictors of Repayment for Joint Liability Microfinance Loans". The pre-registration document is available on the Open Science Framework at https://osf.io/wsdjn.
+Data and analysis scripts for Foster, Postma, Lamba & Mesoudi (2025) Testing Evolutionary Theories of Human Cooperation via Meta-Analysis of Microfinance Repayment.
 
-FosterMA3_Analysis.R includes code for cleaning the data, running analyses and plotting results.
+In the **Data** folder:
+
+**MetaAnalysis** contains the data for each meta-analysis included in the study
+
+**ROBOS** contains data for generating risk of bias plots
+
+In the **Scripts** folder:
+
+**AllModels_Forest_Main.R** is the primary analysis script to run all meta-analyses and produce the forest plot in Figure 2 of the paper
+
+**FullAnalyses** contains individual analysis scripts for each meta analysis, including sensitivity analyses and ROBOS plots
+
+
