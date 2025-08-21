@@ -8,11 +8,17 @@ In the **Data** folder:
 
 **ROBOS** contains data for generating risk of bias plots
 
+**FosterMA8_DataExtracted_Main.xlsx** is the full dataset of studies contributing to the meta-analyses, including descriptive data on study populations
+
+**FosterMA8_DataExtracted_Pilot_Split.xlsx** is the pilot dataset
+
 In the **Scripts** folder:
 
 **AllModels_Forest_Main.R** is the primary analysis script to run all meta-analyses and produce the forest plot in Figure 2 of the paper
 
-**FullAnalyses** contains individual analysis scripts for each meta analysis, including sensitivity analyses and ROBOS plots
+**FullAnalyses.R** contains individual analysis scripts for each meta analysis, including sensitivity analyses and ROBOS plots
+
+**MainCountries.R** contains code to reproduce the map in Figure 1 of the paper
 
 Other project files can be viewed on the project OSF page: https://osf.io/wsdjn/ 
 
