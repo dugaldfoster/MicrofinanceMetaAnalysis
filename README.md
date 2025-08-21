@@ -12,6 +12,8 @@ In the **Data** folder:
 
 **FosterMA8_DataExtracted_Pilot_Split.xlsx** is the pilot dataset
 
+Use of the datasets is encouraged and is released under the [CC-BY 4.0 License] {r} [LICENSE] (ttps://github.com/dugaldfoster/MicrofinanceMetaAnalysis/blob/baa8846dbe12d09a5e80fc2aa70fcab7f061ebf6/LICENSE)
+
 In the **Scripts** folder:
 
 **AllModels_Forest_Main.R** is the primary analysis script to run all meta-analyses and produce the forest plot in Figure 2 of the paper
