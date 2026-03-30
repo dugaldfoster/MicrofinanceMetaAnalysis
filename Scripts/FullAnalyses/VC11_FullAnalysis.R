@@ -343,3 +343,75 @@ rob_summary(data = BorrowerAge_ROBOS,
 
 rob_traffic_light(BorrowerAge_ROBOS, tool = "Generic")
 
+
+##### Test for publication bias #####
+
+### Tests which take frequentist model as input ###
+# Contour-enhanced funnel plot
+rem_freq <- rma(yi = yi, sei = sei, data = BorrowerAge[BorrowerAge$risk_of_bias != "high",])
+
+funnel(rem_freq, refline=0, level=c(90, 95, 99), 
+       shade=c("white", "gray", "darkgray")) 
+
+# Rank correlation test
+ranktest(rem_freq)
+
+### Bayesian Copas Selection Model ###
+
+#Fit the RBC model with different random effects distributions 
+#and compare them using the DIC
+pubbias.some <- RobustBayesianCopas(y = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$yi, 
+                                    s = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$sei, 
+                                    init=NULL, re.dist=c("normal"),
+                                    burn=10000, nmc=10000)
+
+pubbias.someST <- RobustBayesianCopas(y = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$yi, 
+                                      s = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$sei, 
+                                      init=NULL, re.dist=c("StudentsT"),
+                                      burn=10000, nmc=10000)
+
+pubbias.someL <- RobustBayesianCopas(y = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$yi, 
+                                     s = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$sei, 
+                                     init=NULL, re.dist=c("Laplace"),
+                                     burn=10000, nmc=10000)
+
+pubbias.someSL <- RobustBayesianCopas(y = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$yi, 
+                                      s = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$sei, 
+                                      init=NULL, re.dist=c("slash"),
+                                      burn=10000, nmc=10000)
+
+pubbias.some$DIC
+pubbias.someST$DIC
+pubbias.someL$DIC
+pubbias.someSL$DIC
+
+# Plot posterior for rho
+hist(pubbias.some$rho.samples)
+
+# Point estimate for theta
+pubbias.some$theta.hat 
+
+# Standard error for theta
+sd(pubbias.some$theta.samples)
+
+# 95% posterior credible interval for theta
+quantile(pubbias.some$theta.samples, probs=c(0.025,0.975))
+
+# Obtain odds ratio estimates
+OR.samples.RBC = exp(pubbias.some$theta.samples)
+
+# Posterior mean OR
+mean(OR.samples.RBC) 
+
+# 95% posterior credible interval for OR
+quantile(OR.samples.RBC, probs=c(0.025,0.975))
+
+#Calculate D measure
+#Model without publication bias
+pubbias.none <- BayesNonBiasCorrected(y = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$yi, 
+                                      s = BorrowerAge[BorrowerAge$risk_of_bias != "high",]$sei,
+                                      init = NULL, re.dist = ("normal"),
+                                      burn=10000, nmc=10000)
+
+# D measure
+D.measure(pubbias.some$theta.samples, pubbias.none$theta.samples)
