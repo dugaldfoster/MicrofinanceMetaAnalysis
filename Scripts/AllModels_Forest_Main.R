@@ -1,12 +1,15 @@
-## Master Script ##
+# R analysis code for "Testing Evolutionary Theories of Human Cooperation via Meta-Analysis of Microfinance Repayment" by Dugald Foster, Erik Postma, Shakti Lamba & Alex Mesoudi
 
-##### VC01 #####
+# original code by Dugald Foster, minor modifications by Alex Mesoudi
+
+# Prepare data and run meta-analytic models -----------------
+
+## VC01 Relatives in Group -------------
 
 # Install and load packages
 #install.packages("pacman")
 library(pacman)
-p_load("devtools", "esc", "metafor", "brms", "brmstools", "ggplot2", 
-       "dplyr", "bayesplot", "robvis", "RobustBayesianCopas", "stringr", "stringi", "tidybayes", "forcats", "ggridges")
+p_load("devtools", "esc", "metafor", "brms", "ggplot2", "dplyr", "bayesplot", "robvis", "RobustBayesianCopas", "stringr", "stringi", "tidybayes", "forcats", "ggridges")
 
 # Read in effect size estimates for Variable Category x
 Relatives <- read.csv("VC01_RelativesInGroup_All.csv")
@@ -94,7 +97,7 @@ rem.brms.Relatives <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                           seed = 42,
                           control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC02 #####
+## VC02 Prior Acquaintance----------------------------
 
 # Read in effect size estimates for Variable Category x
 PrAcq <- read.csv("VC02_PriorAcquaintance_All.csv")
@@ -184,7 +187,8 @@ rem.brms.PrAcq <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                       seed = 42,
                       control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC03 #####
+## VC03 Group Tenure ---------------------
+
 # Read in effect size estimates for Variable Category x
 GroupTenure <- read.csv("VC03_GroupTenure_All.csv")
 
@@ -284,10 +288,9 @@ rem.brms.GroupTenure <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                             seed = 42,
                             control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC04 #####
-#Insufficent data#
+## VC04 Insufficent data ------------------------
 
-##### VC05 #####
+## VC05 Geographic Proximity -------------------------
 
 # Read in effect size estimates for Variable Category x
 GeogProx <- read.csv("VC05_GeographicProximity_All.csv")
@@ -383,7 +386,8 @@ rem.brms.GeogProx <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                          seed = 42,
                          control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC06 #####
+## VC06 Member Management -------------------
+
 # Read in effect size estimates for Variable Category x
 MemManage <- read.csv("VC06_MemberManagement_All.csv")
 
@@ -487,7 +491,7 @@ rem.brms.MemManage <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                           seed = 42,
                           control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC07 #####
+## VC07 Group Sanctions -------------------------
 
 # Read in effect size estimates for Variable Category x
 GroupSanctions <- read.csv("VC07_GroupSanctions_All.csv")
@@ -583,7 +587,7 @@ rem.brms.GroupSanctions <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                                seed = 42,
                                control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC08 #####
+## VC08 Peer Monitoring----------------------
 
 # Read in effect size estimates for Variable Category x
 PeerMon <- read.csv("VC08_PeerMonitoring_All.csv")
@@ -683,7 +687,7 @@ rem.brms.PeerMon <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                         seed = 42,
                         control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC09 #####
+## VC09 External Monitoring -----------------------
 
 # Read in effect size estimates for Variable Category x
 ExtMonitoring <- read.csv("VC09_ExternalMonitoring_All.csv")
@@ -770,7 +774,8 @@ rem.brms.ExtMonitoring <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                               seed = 42,
                               control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC010 #####
+## VC10 Group Size ------------------------------
+
 # Read in effect size estimates for Variable Category x
 GroupSize <- read.csv("VC10_GroupSize_All.csv")
 
@@ -877,7 +882,8 @@ rem.brms.GroupSize <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                           seed = 42,
                           control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC011 #####
+## VC11 Borrower Age --------------------
+
 # Read in effect size estimates for Variable Category x
 BorrowerAge <- read.csv("VC11_BorrowerAge_All.csv")
 
@@ -963,7 +969,8 @@ rem.brms.BorrowerAge <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                             seed = 42,
                             control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### VC012 #####
+## VC12 Borrower Sex -------------------------
+
 # Read in effect size estimates for Variable Category x
 BorrowerSex <- read.csv("VC12_BorrowerSex_All.csv")
 
@@ -1049,9 +1056,10 @@ rem.brms.BorrowerSex <- brm(yi | se(sei) ~ 1 + (1 | model_ID),
                             seed = 42,
                             control = list(adapt_delta = 0.999, max_treedepth = 12))
 
-##### Meta-analysis forest plots #####
+# Meta-analysis forest plots --------------------------
 
-##### VC01 Relatives in Group ##### 
+## VC01 Relatives in Group ----------------------- 
+
 # Study-specific effects are deviations + average
 out_r_Relatives <- spread_draws(rem.brms.Relatives, r_model_ID[model_ID], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept)
@@ -1072,7 +1080,10 @@ out_all_Relatives <- bind_rows(out_r_Relatives, out_f_Relatives) %>%
 
 # Data frame of summary numbers
 out_all_Relatives_sum <- group_by(out_all_Relatives, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_Relatives$model_ID) <- c("Relatives in Group Effect", "Qinlan and Izumida 2013", "Ahlin and Townsend 2007")
+levels(out_all_Relatives_sum$model_ID) <- c("Relatives in Group Effect", "Qinlan and Izumida 2013", "Ahlin and Townsend 2007")
 
 # Draw plot
 out_all_Relatives %>%   
@@ -1085,11 +1096,13 @@ out_all_Relatives %>%
   geom_text(data = mutate_if(out_all_Relatives_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1097,9 +1110,16 @@ out_all_Relatives %>%
   #Add points for original study estimates
   geom_point(
     data = Relatives %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC02 Prior Acquaintance ##### 
+ggsave("figS1_relatives.png", 
+       bg = "white",
+       width = 7.5,
+       height = 3,
+       dpi = 600)
+
+## VC02 Prior Acquaintance ----------------------
+
 # Study-specific effects are deviations + average
 out_r_PrAcq <- spread_draws(rem.brms.PrAcq, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1120,7 +1140,11 @@ out_all_PrAcq <- bind_rows(out_r_PrAcq, out_f_PrAcq) %>%
 
 # Data frame of summary numbers
 out_all_PrAcq_sum <- group_by(out_all_PrAcq, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_PrAcq$model_ID) <- c("Prior Acquaintance Effect", "Hermes et al. 2005", "Berhane et al. 2009", "Asgedom et al. 2015", "Wydick 1999", "Noglo and Androuais 2015", "Kritikos and Vigenina 2005")
+levels(out_all_PrAcq_sum$model_ID) <- c("Prior Acquaintance Effect", "Hermes et al. 2005", "Berhane et al. 2009", "Asgedom et al. 2015", "Wydick 1999", "Noglo and Androuais 2015", "Kritikos and Vigenina 2005")
+PrAcq$study[PrAcq$study == "Asgedom 2015"] <- "Asgedom et al. 2015"
 
 # Draw plot
 out_all_PrAcq %>%   
@@ -1133,11 +1157,13 @@ out_all_PrAcq %>%
   geom_text(data = mutate_if(out_all_PrAcq_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1145,9 +1171,16 @@ out_all_PrAcq %>%
   #Add points for original study estimates
   geom_point(
     data = PrAcq %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC03 Group Tenure #####
+ggsave("figS2_prior_acq.png", 
+       bg = "white",
+       width = 7.5,
+       height = 5.5,
+       dpi = 600)
+
+## VC03 Group Tenure ---------------------------
+
 # Study-specific effects are deviations + average
 out_r_GroupTenure <- spread_draws(rem.brms.GroupTenure, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1168,7 +1201,12 @@ out_all_GroupTenure <- bind_rows(out_r_GroupTenure, out_f_GroupTenure) %>%
 
 # Data frame of summary numbers
 out_all_GroupTenure_sum <- group_by(out_all_GroupTenure, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_GroupTenure$model_ID) <- c("Group Tenure Effect", "Noglo and Androuais 2015", "Berhane et al. 2009", "Anthony and Horne 2003", "Postelnicu et al. 2019", "Musah et al. 2014", "Wydick 1999", "Hung 2003")
+levels(out_all_GroupTenure_sum$model_ID) <- c("Group Tenure Effect", "Noglo and Androuais 2015", "Berhane et al. 2009", "Anthony and Horne 2003", "Postelnicu et al. 2019", "Musah et al. 2014", "Wydick 1999", "Hung 2003")
+GroupTenure$study[GroupTenure$study == "BerhaneGM 2009"] <- "Berhane et al. 2009"
+GroupTenure$study[GroupTenure$study == "MusahEK 2014"] <- "Musah et al. 2014"
 
 # Draw plot
 out_all_GroupTenure %>%   
@@ -1181,11 +1219,13 @@ out_all_GroupTenure %>%
   geom_text(data = mutate_if(out_all_GroupTenure_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1193,12 +1233,18 @@ out_all_GroupTenure %>%
   #Add points for original study estimates
   geom_point(
     data = GroupTenure %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC04 ##### 
-# insufficient data
+ggsave("figS3_group_tenure.png", 
+       bg = "white",
+       width = 7.5,
+       height = 5.5,
+       dpi = 600)
 
-##### VC05 Geographic Proximity #####
+## VC04 insufficient data -----------------------
+
+## VC05 Geographic Proximity ---------------------
+
 # Study-specific effects are deviations + average
 out_r_GeogProx <- spread_draws(rem.brms.GeogProx, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1219,7 +1265,13 @@ out_all_GeogProx <- bind_rows(out_r_GeogProx, out_f_GeogProx) %>%
 
 # Data frame of summary numbers
 out_all_GeogProx_sum <- group_by(out_all_GeogProx, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_GeogProx$model_ID) <- c("Geographic Proximity Effect", "Cassar et al. 2007", "Qinlan & Izumida 2013", "Berhane et al. 2009", "Hermes et al. 2005", "Wydick 1999")
+levels(out_all_GeogProx_sum$model_ID) <- c("Geographic Proximity Effect", "Cassar et al. 2007", "Qinlan & Izumida 2013", "Berhane et al. 2009", "Hermes et al. 2005", "Wydick 1999")
+GeogProx$study[GeogProx$study == "BerhaneGM 2009"] <- "Berhane et al. 2009"
+GeogProx$study[GeogProx$study == "CassarCW 2007"] <- "Cassar et al. 2007"
+GeogProx$study[GeogProx$study == "QinlanI 2013"] <- "Qinlan & Izumida 2013"
 
 # Draw plot
 out_all_GeogProx %>%   
@@ -1232,11 +1284,13 @@ out_all_GeogProx %>%
   geom_text(data = mutate_if(out_all_GeogProx_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1244,9 +1298,16 @@ out_all_GeogProx %>%
   #Add points for original study estimates
   geom_point(
     data = GeogProx %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC06 Member Management #####
+ggsave("figS4_geog_prox.png", 
+       bg = "white",
+       width = 7.5,
+       height = 5.5,
+       dpi = 600)
+
+## VC06 Member Management -------------------
+
 # Study-specific effects are deviations + average
 out_r_MemManage <- spread_draws(rem.brms.MemManage, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1267,7 +1328,12 @@ out_all_MemManage <- bind_rows(out_r_MemManage, out_f_MemManage) %>%
 
 # Data frame of summary numbers
 out_all_MemManage_sum <- group_by(out_all_MemManage, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_MemManage$model_ID) <- c("Member Management Effect", "Kono 2006", "Hung 2003", "Postelnicu et al. 2019", "Wenner 1995", "Asgedom et al. 2015", "Ahlin and Townsend 2007", "Cassar & Wydick 2010")
+levels(out_all_MemManage_sum$model_ID) <- c("Member Management Effect", "Kono 2006", "Hung 2003", "Postelnicu et al. 2019", "Wenner 1995", "Asgedom et al. 2015", "Ahlin and Townsend 2007", "Cassar & Wydick 2010")
+MemManage$study[MemManage$study == "Asgedom 2015"] <- "Asgedom et al. 2015"
+MemManage$study[MemManage$study == "CassarW 2010"] <- "Cassar & Wydick 2010"
 
 # Draw plot
 out_all_MemManage %>%   
@@ -1280,11 +1346,13 @@ out_all_MemManage %>%
   geom_text(data = mutate_if(out_all_MemManage_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1292,9 +1360,16 @@ out_all_MemManage %>%
   #Add points for original study estimates
   geom_point(
     data = MemManage %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC07 Group Sanctions #####
+ggsave("figS5_member_management.png", 
+       bg = "white",
+       width = 7.5,
+       height = 5.5,
+       dpi = 600)
+
+## VC07 Group Sanctions -------------------------
+
 # Study-specific effects are deviations + average
 out_r_GroupSanctions <- spread_draws(rem.brms.GroupSanctions, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1315,7 +1390,13 @@ out_all_GroupSanctions <- bind_rows(out_r_GroupSanctions, out_f_GroupSanctions) 
 
 # Data frame of summary numbers
 out_all_GroupSanctions_sum <- group_by(out_all_GroupSanctions, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_GroupSanctions$model_ID) <- c("Group Sanctions Effect", "Postelnicu et al. 2019", "Asgedom et al. 2015", "Kono 2013", "Wydick 1999", "Sangwan et al. 2020", "Hung 2003")
+levels(out_all_GroupSanctions_sum$model_ID) <- c("Group Sanctions Effect", "Postelnicu et al. 2019", "Asgedom et al. 2015", "Kono 2013", "Wydick 1999", "Sangwan et al. 2020", "Hung 2003")
+GroupSanctions$study[GroupSanctions$study == "Asgedom 2015"] <- "Asgedom et al. 2015"
+GroupSanctions$study[GroupSanctions$study == "Sangwan S and Nayak, NC and Samanta, D, 2020"] <- "Sangwan et al. 2020"
+GroupSanctions$study[GroupSanctions$study == "Kono H, 2013"] <- "Kono 2013"
 
 # Draw plot
 out_all_GroupSanctions %>%   
@@ -1328,11 +1409,13 @@ out_all_GroupSanctions %>%
   geom_text(data = mutate_if(out_all_GroupSanctions_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1340,9 +1423,16 @@ out_all_GroupSanctions %>%
   #Add points for original study estimates
   geom_point(
     data = GroupSanctions %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC08 Peer Monitoring #####
+ggsave("figS6_group_sanctions.png", 
+       bg = "white",
+       width = 7.5,
+       height = 5.5,
+       dpi = 600)
+
+## VC08 Peer Monitoring----------------------
+
 # Study-specific effects are deviations + average
 out_r_PeerMon <- spread_draws(rem.brms.PeerMon, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1363,11 +1453,19 @@ out_all_PeerMon <- bind_rows(out_r_PeerMon, out_f_PeerMon) %>%
 
 # Data frame of summary numbers
 out_all_PeerMon_sum <- group_by(out_all_PeerMon, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_PeerMon$model_ID) <- c("Peer Monitoring Effect", "Razzaque 2018", "Hermes et al. 2005", "Asgedom et al. 2015", "Wydick 1999", "Berhane et al. 2009", "Sangwan et al. 2020", "Hung 2003")
+levels(out_all_PeerMon_sum$model_ID) <- c("Peer Monitoring Effect", "Razzaque 2018", "Hermes et al. 2005", "Asgedom et al. 2015", "Wydick 1999", "Berhane et al. 2009", "Sangwan et al. 2020", "Hung 2003")
+PeerMon$study[PeerMon$study == "Razzaque 2018_M1\t"] <- "Razzaque 2018"
+PeerMon$study[PeerMon$study == "Asgedom 2015"] <- "Asgedom et al. 2015"
+PeerMon$study[PeerMon$study == "BerhaneGM 2009_M1"] <- "Berhane et al. 2009"
+PeerMon$study[PeerMon$study == "SangwanNS 2020_M1\t"] <- "Sangwan et al. 2020"
+PeerMon$study[PeerMon$study == "Hung 2003_M2"] <- "Hung 2003"
 
 # Draw plot
 out_all_PeerMon %>%   
-  ggplot(aes(b_Intercept, model_ID, xmin = 0, xmax = 4)) +
+  ggplot(aes(b_Intercept, model_ID, xmin = 0, xmax = 5)) +
   geom_density_ridges(rel_min_height = 0.01, 
                       col = NA,
                       scale = 1, 
@@ -1376,21 +1474,30 @@ out_all_PeerMon %>%
   geom_text(data = mutate_if(out_all_PeerMon_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
-  scale_x_continuous(limits = c(0, 4), n.breaks = 8) +
+  scale_x_continuous(limits = c(0, 5), n.breaks = 8) +
   #Add points for original study estimates
   geom_point(
     data = PeerMon %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC09 External Monitoring #####
+ggsave("figS7_peer_monitoring.png", 
+       bg = "white",
+       width = 7.5,
+       height = 7,
+       dpi = 600)
+
+## VC09 External Monitoring -----------------------
+
 # Study-specific effects are deviations + average
 out_r_ExtMonitoring <- spread_draws(rem.brms.ExtMonitoring, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1411,7 +1518,12 @@ out_all_ExtMonitoring <- bind_rows(out_r_ExtMonitoring, out_f_ExtMonitoring) %>%
 
 # Data frame of summary numbers
 out_all_ExtMonitoring_sum <- group_by(out_all_ExtMonitoring, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_ExtMonitoring$model_ID) <- c("External Monitoring Effect", "Hermes et al. 2005", "Hung 2003", "Sangwan et al. 2020")
+levels(out_all_ExtMonitoring_sum$model_ID) <- c("External Monitoring Effect", "Hermes et al. 2005", "Hung 2003", "Sangwan et al. 2020")
+ExtMonitoring$study[ExtMonitoring$study == "Sangwan S and Nayak, NC and Samanta, D, 2020"] <- "Sangwan et al. 2020"
+ExtMonitoring$study[ExtMonitoring$study == "Hung CR, 2003"] <- "Hung 2003"
 
 # Draw plot
 out_all_ExtMonitoring %>%   
@@ -1424,11 +1536,13 @@ out_all_ExtMonitoring %>%
   geom_text(data = mutate_if(out_all_ExtMonitoring_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1436,9 +1550,16 @@ out_all_ExtMonitoring %>%
   #Add points for original study estimates
   geom_point(
     data = ExtMonitoring %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC10 Group Size #####
+ggsave("figS8_external_monitoring.png", 
+       bg = "white",
+       width = 7.5,
+       height = 3,
+       dpi = 600)
+
+## VC10 Group Size ------------------------------
+
 # Study-specific effects are deviations + average
 out_r_GroupSize <- spread_draws(rem.brms.GroupSize, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1459,7 +1580,15 @@ out_all_GroupSize <- bind_rows(out_r_GroupSize, out_f_GroupSize) %>%
 
 # Data frame of summary numbers
 out_all_GroupSize_sum <- group_by(out_all_GroupSize, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_GroupSize$model_ID) <- c("Group Size Effect", "Kalra 2015", "Postelnicu et al. 2019", "Wydick 1999", "Singh & Padhi 2017", "Noglo and Androuais 2015", "van den Berg et al. 2015", "Ahlin and Townsend 2007", "Muchnick & Kollamparambil 2015", "Berhane et al. 2009")
+levels(out_all_GroupSize_sum$model_ID) <- c("Group Size Effect", "Kalra 2015", "Postelnicu et al. 2019", "Wydick 1999", "Singh & Padhi 2017", "Noglo and Androuais 2015", "van den Berg et al. 2015", "Ahlin and Townsend 2007", "Muchnick & Kollamparambil 2015", "Berhane et al. 2009")
+GroupSize$study[GroupSize$study == "Kalra V, 2015"] <- "Kalra 2015"
+GroupSize$study[GroupSize$study == "Singh V and Padhi, P, 2017"] <- "Singh & Padhi 2017"
+GroupSize$study[GroupSize$study == "M Van den Berg R Lensink, R Servin, 2015"] <- "van den Berg et al. 2015"
+GroupSize$study[GroupSize$study == "Muchnick J and Kollamparambil, U, 2015"] <- "Muchnick & Kollamparambil 2015"
+GroupSize$study[GroupSize$study == "Berhane Guush, Cornelis Gardebroek, and Henk AJ Moll, 2009"] <- "Berhane et al. 2009"
 
 # Draw plot
 out_all_GroupSize %>%   
@@ -1472,11 +1601,13 @@ out_all_GroupSize %>%
   geom_text(data = mutate_if(out_all_GroupSize_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1484,9 +1615,16 @@ out_all_GroupSize %>%
   #Add points for original study estimates
   geom_point(
     data = GroupSize %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC11 Borrower Age #####
+ggsave("figS9_group_size.png", 
+       bg = "white",
+       width = 7.5,
+       height = 5.5,
+       dpi = 600)
+
+## VC11 Borrower Age --------------------
+
 # Study-specific effects are deviations + average
 out_r_BorrowerAge <- spread_draws(rem.brms.BorrowerAge, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1507,7 +1645,20 @@ out_all_BorrowerAge <- bind_rows(out_r_BorrowerAge, out_f_BorrowerAge) %>%
 
 # Data frame of summary numbers
 out_all_BorrowerAge_sum <- group_by(out_all_BorrowerAge, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_BorrowerAge$model_ID) <- c("Borrower Age Effect", "Razzaque 2018", "Musah et al. 2014", "Hermes et al. 2005", "Muchnick & Kollamparambil 2015", "Singh & Padhi 2017", "van den Berg et al. 2015", "Cassar & Wydick 2010", "Shahriar et al. 2020", "Postelnicu et al. 2015", "Kono 2006", "Jumpah et al. 2018")
+levels(out_all_BorrowerAge_sum$model_ID) <- c("Borrower Age Effect", "Razzaque 2018", "Musah et al. 2014", "Hermes et al. 2005", "Muchnick & Kollamparambil 2015", "Singh & Padhi 2017", "van den Berg et al. 2015", "Cassar & Wydick 2010", "Shahriar et al. 2020", "Postelnicu et al. 2015", "Kono 2006", "Jumpah et al. 2018")
+BorrowerAge$study[BorrowerAge$study == "Razzaque S, 2018"] <- "Razzaque 2018"
+BorrowerAge$study[BorrowerAge$study == "M Musah F Enu-Kwesi, F Koomson, 2014"] <- "Musah et al. 2014"
+BorrowerAge$study[BorrowerAge$study == "Muchnick J and Kollamparambil, U, 2015"] <- "Muchnick & Kollamparambil 2015"
+BorrowerAge$study[BorrowerAge$study == "Singh V and Padhi, P, 2017"] <- "Singh & Padhi 2017"
+BorrowerAge$study[BorrowerAge$study == "M Van den Berg R Lensink, R Servin, 2015"] <- "van den Berg et al. 2015"
+BorrowerAge$study[BorrowerAge$study == "Cassar A and Wydick, B, 2010"] <- "Cassar & Wydick 2010"
+BorrowerAge$study[BorrowerAge$study == "Shahriar S and Qian, L and Rahman, A and Hasan, M and Kea, S and Abdullahi, NM, 2020"] <- "Shahriar et al. 2020"
+BorrowerAge$study[BorrowerAge$study == "Postelnicu L and Hermes, N and Juarez, RS, 2015"] <- "Postelnicu et al. 2015"
+BorrowerAge$study[BorrowerAge$study == "Kono H, 2006"] <- "Kono 2006"
+BorrowerAge$study[BorrowerAge$study == "Jumpah ET and Tetteh, EK and Adams, A, 2018"] <- "Jumpah et al. 2018"
 
 # Draw plot
 out_all_BorrowerAge %>%   
@@ -1520,11 +1671,13 @@ out_all_BorrowerAge %>%
   geom_text(data = mutate_if(out_all_BorrowerAge_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1532,9 +1685,16 @@ out_all_BorrowerAge %>%
   #Add points for original study estimates
   geom_point(
     data = BorrowerAge %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### VC12 Borrower Sex #####
+ggsave("figS10_age.png", 
+       bg = "white",
+       width = 7.5,
+       height = 7.5,
+       dpi = 600)
+
+## VC12 Borrower Sex -------------------------
+
 # Study-specific effects are deviations + average
 out_r_BorrowerSex <- spread_draws(rem.brms.BorrowerSex, r_model_ID[model_ID,], b_Intercept) %>% 
   mutate(b_Intercept = r_model_ID + b_Intercept) 
@@ -1555,7 +1715,20 @@ out_all_BorrowerSex <- bind_rows(out_r_BorrowerSex, out_f_BorrowerSex) %>%
 
 # Data frame of summary numbers
 out_all_BorrowerSex_sum <- group_by(out_all_BorrowerSex, model_ID) %>% 
-  mean_qi(b_Intercept)
+  median_qi(b_Intercept)
+
+levels(out_all_BorrowerSex$model_ID) <- c("Borrower Sex Effect", "Anthony & Horne 2003", "Muchnick & Kollamparambil 2015", "Cassar & Wydick 2010", "Hermes et al. 2005", "Jumpah  et al. 2018", "Berhane et al. 2009", "Shahriar et al. 2020", "Qinlan & Izumida 2013", "Razzaque 2018", "Asgedom et al. 2015", "Kono 2006")
+levels(out_all_BorrowerSex_sum$model_ID) <- c("Borrower Sex Effect", "Anthony & Horne 2003", "Muchnick & Kollamparambil 2015", "Cassar & Wydick 2010", "Hermes et al. 2005", "Jumpah  et al. 2018", "Berhane et al. 2009", "Shahriar et al. 2020", "Qinlan & Izumida 2013", "Razzaque 2018", "Asgedom et al. 2015", "Kono 2006")
+BorrowerSex$study[BorrowerSex$study == "Anthony and Horne 2003"] <- "Anthony & Horne 2003"
+BorrowerSex$study[BorrowerSex$study == "Muchnick J and Kollamparambil, U, 2015"] <- "Muchnick & Kollamparambil 2015"
+BorrowerSex$study[BorrowerSex$study == "Cassar A and Wydick, B, 2010"] <- "Cassar & Wydick 2010"
+BorrowerSex$study[BorrowerSex$study == "Jumpah ET and Tetteh, EK and Adams, A, 2018"] <- "Jumpah  et al. 2018"
+BorrowerSex$study[BorrowerSex$study == "Berhane Guush, Cornelis Gardebroek, and Henk AJ Moll, 2009"] <- "Berhane et al. 2009"
+BorrowerSex$study[BorrowerSex$study == "Shahriar S and Qian, L and Rahman, A and Hasan, M and Kea, S and Abdullahi, NM, 2020"] <- "Shahriar et al. 2020"
+BorrowerSex$study[BorrowerSex$study == "Qinlan Z and Izumida, Y, 2013"] <- "Qinlan & Izumida 2013"
+BorrowerSex$study[BorrowerSex$study == "Razzaque S, 2018"] <- "Razzaque 2018"
+BorrowerSex$study[BorrowerSex$study == "Asgedom 2015"] <- "Asgedom et al. 2015"
+BorrowerSex$study[BorrowerSex$study == "Kono H, 2006"] <- "Kono 2006"
 
 # Draw plot
 out_all_BorrowerSex %>%   
@@ -1568,11 +1741,13 @@ out_all_BorrowerSex %>%
   geom_text(data = mutate_if(out_all_BorrowerSex_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", vjust = -0.5) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
   xlab("Odds Ratio") +
+  # Y axis label
+  ylab("Meta-Analytic Estimate") +
   # Theme
   theme_minimal() +
   # Set x axis limits
@@ -1580,10 +1755,16 @@ out_all_BorrowerSex %>%
   #Add points for original study estimates
   geom_point(
     data = BorrowerSex %>% filter(risk_of_bias == "low" | risk_of_bias == "medium"), 
-    aes(x=exp(yi)), position = position_nudge(y = -.05), shape = 1)
+    aes(x=exp(yi), y=study), position = position_nudge(y = -.05), shape = 1)
 
-##### Combine all meta-analytic estimates #####
+ggsave("figS11_sex.png", 
+       bg = "white",
+       width = 7.5,
+       height = 7.5,
+       dpi = 600)
 
+
+# Combine all meta-analytic estimates and create Fig 2 ---------------------------
 
 # Combine average and study-specific effects' data frames
 out_all_metas <- bind_rows(out_f_Relatives, out_f_PrAcq, out_f_GroupTenure, 
@@ -1602,8 +1783,8 @@ out_all_metas_sum <- group_by(out_all_metas, model_ID) %>%
   median_qi(b_Intercept)
 
 # Relabel to remove "Effects"
-levels(out_all_metas$model_ID) <- c("Group Sanctions", "Peer Monitoring", "Prior Acquaintance", "Group Size", "Borrower Sex", "Member Management", "Borrower Age", "Group Tenure", "Geographic Proximity", "Relatives in Group", "External Monitoring")
-levels(out_all_metas_sum$model_ID) <- c("Group Sanctions", "Peer Monitoring", "Prior Acquaintance", "Group Size", "Borrower Sex", "Member Management", "Borrower Age", "Group Tenure", "Geographic Proximity", "Relatives in Group", "External Monitoring")
+levels(out_all_metas$model_ID) <- c("Group Sanctions (n=6)", "Peer Monitoring (n=7)", "Prior Acquaintance (n=6)", "Group Size (n=9)", "Borrower Sex (n=11)", "Member Management (n=7)", "Borrower Age (n=11)", "Group Tenure (n=7)", "Geographic Proximity (n=5)", "Relatives in Group (n=2)", "External Monitoring (n=3)")
+levels(out_all_metas_sum$model_ID) <- c("Group Sanctions (n=6)", "Peer Monitoring (n=7)", "Prior Acquaintance (n=6)", "Group Size (n=9)", "Borrower Sex (n=11)", "Member Management (n=7)", "Borrower Age (n=11)", "Group Tenure (n=7)", "Geographic Proximity (n=5)", "Relatives in Group (n=2)", "External Monitoring (n=3)")
 
 # Draw plot
 out_all_metas %>%   
@@ -1616,7 +1797,7 @@ out_all_metas %>%
   geom_text(data = mutate_if(out_all_metas_sum, is.numeric, round, 2),
             # Use glue package to combine strings
             aes(label = glue::glue("{b_Intercept} [{.lower}, {.upper}]"), x = Inf),
-            hjust = "inward") +
+            hjust = "inward", size = 3.25) +
   # Add dashed line to 0
   geom_vline(xintercept=1, color = "black", linetype = "dashed") +
   # X axis label
@@ -1630,6 +1811,6 @@ out_all_metas %>%
 
 ggsave("fig2_forestplot.png", 
        bg = "white",
-       width = 6.5,
-       height = 6.5,
+       width = 6,
+       height = 6,
        dpi = 600)
